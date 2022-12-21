@@ -1,0 +1,25 @@
+{
+  "name": "wework/wework",
+  "type": "library",
+  "description": "official lib of wework api https://work.weixin.qq.com/api/doc",
+  "keywords": [
+    "wework"
+  ],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "eva",
+      "email": "sh_xll@foxmail.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Wework\\": "src/"
+    },
+    "classmap": [
+      "src/Examples"
+    ]
+  },
+  "require": {
+  }
+}
