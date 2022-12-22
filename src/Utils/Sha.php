@@ -6,10 +6,9 @@
 
 namespace Wework\Utils;
 
-
-use App\Utils\ErrorHelper\QyWechatErrorHelper;
 use Exception;
-use Illuminate\Support\Facades\Log;
+use Wework\Utils\ErrorHelper\CryptError;
+use Wework\Utils\ErrorHelper\Error;
 
 class Sha
 {
@@ -27,10 +26,9 @@ class Sha
         try {
             $params = [$encryptMsg, $token, $timestamp, $nonce];
             sort($params, SORT_STRING);
-            return [QyWechatErrorHelper::SUCCESS, sha1(implode($params))];
+            return [Error::SUCCESS, sha1(implode($params))];
         } catch (Exception $e) {
-            Log::error('get sha1 error, ' . $e->getMessage());
-            return [QyWechatErrorHelper::COMPUTE_SIGNATURE_ERR, null];
+            return [CryptError::COMPUTE_SIGNATURE_ERR, null];
         }
     }
 }

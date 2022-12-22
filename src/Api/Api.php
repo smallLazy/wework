@@ -128,7 +128,7 @@ abstract class Api
             $this->rspJson = json_decode($this->rspRawStr, true);
 
             if (strpos($this->rspRawStr, "errcode") !== false) {
-                $errCode = Utils::arrayGet($this->rspJson, "errcode");
+                $errCode = Utils::arrayIsExist($this->rspJson, "errcode");
                 if ($errCode == 40014 || $errCode == 42001 || $errCode == 42007 || $errCode == 42009) {
                     if ("NO_TOKEN" != $tokenType && true == $refreshTokenWhenExpired) {
                         if ("ACCESS_TOKEN" == $tokenType) {
@@ -178,7 +178,7 @@ abstract class Api
             $json          = json_decode($this->rspRawStr, true);
             $this->rspJson = $json;
 
-            $errCode = Utils::arrayGet($this->rspJson, "errcode");
+            $errCode = Utils::arrayIsExist($this->rspJson, "errcode");
 
             // token expired
             if ($errCode == 40014 || $errCode == 42001 || $errCode == 42007 || $errCode == 42009) {

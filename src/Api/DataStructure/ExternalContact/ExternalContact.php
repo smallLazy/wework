@@ -2,7 +2,6 @@
 
 namespace Wework\Api\DataStructure\ExternalContact;
 
-
 use Wework\Utils\Utils;
 
 class ExternalContact

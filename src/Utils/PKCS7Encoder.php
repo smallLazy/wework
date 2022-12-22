@@ -6,7 +6,6 @@
 
 namespace Wework\Utils;
 
-
 class PKCS7Encoder
 {
     const BLOCK_SIZE = 32;

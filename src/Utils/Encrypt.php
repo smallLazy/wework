@@ -5,10 +5,9 @@
 
 namespace Wework\Utils;
 
-
-use App\Utils\ErrorHelper\QyWechatErrorHelper;
-use Illuminate\Support\Facades\Log;
 use Exception;
+use Wework\Utils\ErrorHelper\CryptError;
+use Wework\Utils\ErrorHelper\Error;
 
 class Encrypt
 {
@@ -40,10 +39,9 @@ class Encrypt
             // 加密
             $encrypted = openssl_encrypt($params, 'AES-256-CBC', $this->key, OPENSSL_ZERO_PADDING, $this->iv);
 
-            return array(QyWechatErrorHelper::SUCCESS, $encrypted);
+            return array(Error::SUCCESS, $encrypted);
         } catch (Exception $e) {
-            Log::error('encrypt catch error, ' . $e->getMessage());
-            return array(QyWechatErrorHelper::ENCRYPT_AES_ERR, null);
+            return array(CryptError::ENCRYPT_AES_ERR, null);
         }
     }
 
@@ -60,8 +58,7 @@ class Encrypt
             // 解密
             $decrypted = openssl_decrypt($encrypted, 'AES-256-CBC', $this->key, OPENSSL_ZERO_PADDING, $this->iv);
         } catch (Exception $e) {
-            Log::error('decrypt catch error, ' . $e->getMessage());
-            return [QyWechatErrorHelper::DECRYPT_AES_ERR, null];
+            return [CryptError::DECRYPT_AES_ERR, null];
         }
 
         try {
@@ -76,13 +73,12 @@ class Encrypt
             $xmlContent    = substr($content, 4, $xmlLen);
             $fromReceiveId = substr($content, $xmlLen + 4);
         } catch (Exception $e) {
-            Log::error('decrypt catch error, ' . $e->getMessage());
-            return [QyWechatErrorHelper::ILLEGAL_BUFFER, null];
+            return [CryptError::ILLEGAL_BUFFER, null];
         }
         if ($fromReceiveId != $receiveId) {
-            return [QyWechatErrorHelper::VALIDATE_CORP_ID_ERR, null];
+            return [CryptError::VALIDATE_CORP_ID_ERR, null];
         }
-        return [QyWechatErrorHelper::SUCCESS, $xmlContent];
+        return [Error::SUCCESS, $xmlContent];
     }
 
     /**

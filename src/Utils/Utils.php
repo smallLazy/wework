@@ -66,16 +66,17 @@ class Utils
         }
     }
 
-    public static function arrayGet($array, $key, $default = null)
+    public static function arrayIsExist($array, $key, $default = null)
     {
-        if (empty($array) && !is_array($array)) {
+        if (!self::notEmptyArr($array)) {
             return $default;
         }
-        return $array[$key];
+
+        return $array[$key] ?? $default;
     }
 
     // 将 XML 转为 Array
-    public static function xml2Array($xml)
+    public static function xmlToArray($xml)
     {
         // 禁止引用外部 XML 实体
         libxml_disable_entity_loader(true);

@@ -6,11 +6,10 @@
 
 namespace Wework\Utils;
 
-
-use App\Utils\ErrorHelper\QyWechatErrorHelper;
 use DOMDocument;
 use Exception;
-use Illuminate\Support\Facades\Log;
+use Wework\Utils\ErrorHelper\CryptError;
+use Wework\Utils\ErrorHelper\Error;
 
 class XMLParse
 {
@@ -27,10 +26,9 @@ class XMLParse
             $xml->loadXML($xmlParams);
             $encryptArr = $xml->getElementsByTagName('Encrypt');
             $encrypt    = $encryptArr->item(0)->nodeValue;
-            return [QyWechatErrorHelper::SUCCESS, $encrypt];
+            return [Error::SUCCESS, $encrypt];
         } catch (Exception $e) {
-            Log::error('extract catch error, ' . $e->getMessage());
-            return [QyWechatErrorHelper::PARSE_XML_ERR, null];
+            return [CryptError::PARSE_XML_ERR, null];
         }
     }
 }

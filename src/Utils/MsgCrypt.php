@@ -2,14 +2,15 @@
 
 namespace Wework\Utils;
 
-use App\Utils\ErrorHelper\QyWechatErrorHelper;
+use Wework\Utils\ErrorHelper\CryptError;
+use Wework\Utils\ErrorHelper\Error;
 
 class MsgCrypt
 {
-    private $m_sToken;
-    private $m_sReceiveId;
-    private $m_sEncodingAesKey;
-    private $m_sEncodingAesKeyLen = 43;
+    private string $m_sToken;
+    private string $m_sReceiveId;
+    private string $m_sEncodingAesKey;
+    private int    $m_sEncodingAesKeyLen = 43;
 
     /**
      * @param string $token : 开发者设置的token
@@ -41,28 +42,28 @@ class MsgCrypt
         string &$sReplyEchoStr
     ): int {
         if (strlen($this->m_sEncodingAesKey) != $this->m_sEncodingAesKeyLen) {
-            return QyWechatErrorHelper::ILLEGAL_AES_KEY_ERR;
+            return CryptError::ILLEGAL_AES_KEY;
         }
 
         $encryptClass = new Encrypt($this->m_sEncodingAesKey);
         $sha          = new Sha();
         $shaData      = $sha->getSha1($this->m_sToken, $sTimeStamp, $sNonce, $sEchoStr);
 
-        if ($shaData[0] != QyWechatErrorHelper::SUCCESS) {
+        if ($shaData[0] != Error::SUCCESS) {
             return $shaData[0];
         }
 
         if ($shaData[1] != $sMsgSignature) {
-            return QyWechatErrorHelper::VALIDATE_SIGNATURE_ERR;
+            return CryptError::VALIDATE_SIGNATURE_ERR;
         }
 
         $decryptData = $encryptClass->decrypt($sEchoStr, $this->m_sReceiveId);
-        if ($decryptData[0] != QyWechatErrorHelper::SUCCESS) {
+        if ($decryptData[0] != Error::SUCCESS) {
             return $decryptData[0];
         }
 
         $sReplyEchoStr = $decryptData[1];
-        return QyWechatErrorHelper::SUCCESS;
+        return Error::SUCCESS;
     }
 
     /**
@@ -88,7 +89,7 @@ class MsgCrypt
         string $sTimeStamp = null
     ): int {
         if (strlen($this->m_sEncodingAesKey) != 43) {
-            return QyWechatErrorHelper::ILLEGAL_AES_KEY_ERR;
+            return CryptError::ILLEGAL_AES_KEY;
         }
 
         $pc = new Encrypt($this->m_sEncodingAesKey);
@@ -97,7 +98,7 @@ class MsgCrypt
         $xmlParse = new XMLParse();
         $array    = $xmlParse->extract($sPostData);
 
-        if ($array[0] != QyWechatErrorHelper::SUCCESS) {
+        if ($array[0] != Error::SUCCESS) {
             return $array[0];
         }
 
@@ -111,21 +112,21 @@ class MsgCrypt
         $sha   = new Sha();
         $array = $sha->getSha1($this->m_sToken, $sTimeStamp, $sNonce, $encrypt);
 
-        if ($array[0] != QyWechatErrorHelper::SUCCESS) {
+        if ($array[0] != Error::SUCCESS) {
             return $array[0];
         }
 
         $signature = $array[1];
         if ($signature != $sMsgSignature) {
-            return QyWechatErrorHelper::VALIDATE_SIGNATURE_ERR;
+            return CryptError::VALIDATE_SIGNATURE_ERR;
         }
 
         $result = $pc->decrypt($encrypt, $this->m_sReceiveId);
-        if ($result[0] != QyWechatErrorHelper::SUCCESS) {
+        if ($result[0] != Error::SUCCESS) {
             return $result[0];
         }
         $sMsg = $result[1];
 
-        return QyWechatErrorHelper::SUCCESS;
+        return Error::SUCCESS;
     }
 }

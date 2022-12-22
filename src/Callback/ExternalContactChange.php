@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Utils\QyWechat\Callback;
+namespace Wework\Callback;
 
 class ExternalContactChange
 {
